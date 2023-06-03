@@ -1,7 +1,13 @@
 import sys
-from PyQt5 import QtCore
+import os
+from PyQt5 import QtCore, uic
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QMainWindow
+from PyQt5 import QtCore as Qc
+from PyQt5 import QtGui as Qg
+from PyQt5 import QtWidgets as Qw
 from Ui_splash import Ui_Splash
+from horse_riding import Application
 
 # SPLASH SCREE
 class Splash(QMainWindow):
@@ -9,6 +15,16 @@ class Splash(QMainWindow):
         QMainWindow.__init__(self)
         self.ui = Ui_Splash()
         self.ui.setupUi(self)
+        cur_path = os.path.dirname(__file__)
+        logo_path = f'{cur_path}\image\yuyu_logo.png'
+
+        self.view = self.ui.logo_image
+        self.scene = Qw.QGraphicsScene()
+        self.ui.logo_image.setScene(self.scene)
+
+        # タイマーで app.exec_() が実行された後に MyFuncNext を呼び出し。
+        from PyQt5.QtCore import QTimer
+        QTimer.singleShot(1, lambda:self.logoimage(logo_path))
 
         # UI ==> INTERFACE CODES
         ########################################################################
@@ -47,7 +63,13 @@ class Splash(QMainWindow):
         ########################################################################
         self.show()
         # ==> END ##
+    def logoimage(self, im_path):
+        self.scene.clear()
+        pic_Item = Qw.QGraphicsPixmapItem(Qg.QPixmap(im_path))
+        self.scene.addItem(pic_Item)
 
+        self.ui.logo_image.setScene(self.scene)
+        self.ui.logo_image.fitInView(self.scene.sceneRect(), Qc.Qt.KeepAspectRatio)
     # ==> APP FUNCTIONS
     ########################################################################
     def progress(self):
@@ -75,6 +97,9 @@ class Splash(QMainWindow):
 def main():
     app = QApplication(sys.argv)
     # app.setWindowIcon(QIcon(resource_path('logo.png')))
+    cur_path = os.path.dirname(__file__)
+    icon_path = f'{cur_path}\image\hr.png'
+    app.setWindowIcon(QIcon(icon_path))
     window = Splash()
     sys.exit(app.exec_())
 

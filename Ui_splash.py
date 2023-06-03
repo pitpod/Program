@@ -95,6 +95,9 @@ class Ui_Splash(object):
         self.label_credits.setStyleSheet("color: rgb(98, 114, 164);")
         self.label_credits.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.label_credits.setObjectName("label_credits")
+        self.logo_image = QtWidgets.QGraphicsView(self.dropShadowFrame)
+        self.logo_image.setGeometry(QtCore.QRect(60, 30, 256, 192))
+        self.logo_image.setObjectName("logo_image")
         self.verticalLayout.addWidget(self.dropShadowFrame)
         Splash.setCentralWidget(self.centralwidget)
 
@@ -104,7 +107,7 @@ class Ui_Splash(object):
     def retranslateUi(self, Splash):
         _translate = QtCore.QCoreApplication.translate
         Splash.setWindowTitle(_translate("Splash", "MainWindow"))
-        self.label_title.setText(_translate("Splash", "<html><head/><body><p>送迎配車表</p></body></html>"))
-        self.label_description.setText(_translate("Splash", "<html><head/><body><p>配車表のベースファイルを作成</p></body></html>"))
+        self.label_title.setText(_translate("Splash", "<html><head/><body><p>乗馬回数</p></body></html>"))
+        self.label_description.setText(_translate("Splash", "<html><head/><body><p>月もしくは週毎の乗馬回数チェックリスト</p></body></html>"))
         self.label_loading.setText(_translate("Splash", "loading..."))
         self.label_credits.setText(_translate("Splash", "<html><head/><body><p><span style=\" font-weight:600;\">Created</span>: Kouji Matsumoto</p></body></html>"))
