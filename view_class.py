@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import sys
 import os
 import pandas as pd
@@ -21,12 +22,37 @@ class StatusItem:
         self.name = name
         self.color = color
 
+""" iniファイル読込
+"""
+ini_cur_path = os.path.dirname(__file__)
+config_ini = configparser.ConfigParser()
+config_ini_path = f"{ini_cur_path}\\config.ini"
+with open(config_ini_path, encoding='utf-8') as fp:
+    config_ini.read_file(fp)
+    color = config_ini['COLOR']
+    color_B = color.get('color_B')
+    color_C = color.get('color_C')
+    color_D = color.get('color_D')
+    color_E = color.get('color_E')
+
 # Painter COLOR ----- #
-BACKGROUND_BASE_COLOR_A = QtGui.QColor(255, 255, 255)
-BACKGROUND_BASE_COLOR_B = QtGui.QColor(240, 150, 150)
-BACKGROUND_BASE_COLOR_C = QtGui.QColor(200, 200, 255)
-BACKGROUND_BASE_COLOR_D = QtGui.QColor(255, 230, 230)
-BACKGROUND_BASE_COLOR_E = QtGui.QColor(230, 255, 230)
+color_A = (255, 255, 255)
+html_color = '#%02X%02X%02X' % (color_A[0],color_A[1],color_A[2])
+BACKGROUND_BASE_COLOR_A = QtGui.QColor(html_color)
+# color_B = (247, 201, 221)
+# html_color = '#%02X%02X%02X' % (color_B[0],color_B[1],color_B[2])
+BACKGROUND_BASE_COLOR_B = QtGui.QColor(color_B)
+# color_C = (186, 227, 249)
+# html_color = '#%02X%02X%02X' % (color_C[0],color_C[1],color_C[2])
+BACKGROUND_BASE_COLOR_C = QtGui.QColor(color_C)
+# color_D = (255, 251, 199)
+# html_color = '#%02X%02X%02X' % (color_D[0],color_D[1],color_D[2])
+BACKGROUND_BASE_COLOR_D = QtGui.QColor(color_D)
+# BACKGROUND_BASE_COLOR_E = QtGui.QColor(190, 223, 194)
+# color_E = (190, 223, 194)
+# html_color = '#%02X%02X%02X' % (color_E[0],color_E[1],color_E[2])
+BACKGROUND_BASE_COLOR_E = QtGui.QColor(color_E)
+
 STATUS_FONT_COLOR = QtGui.QColor(255, 255, 255)
 
 BACKGROUND_SELECTED = QtGui.QColor(204, 230, 255)
@@ -133,8 +159,8 @@ class TableDelegate(QtWidgets.QItemDelegate):
         self.week_num = week_num
         self.hr_pd = hr_pd
         # self.hr_pd = pd.DataFrame()
-    def paint(self, painter, option, index):
 
+    def paint(self, painter, option, index):
         # 背景色を指定する
         bgColor = BACKGROUND_BASE_COLOR_A
         if index.column() in self.sun:
@@ -178,8 +204,11 @@ class Database():
             database_class = config_ini['DATABASE_CLASS']
             self.database_list = database_class.get('database').split(",")
             self.database_name = database_class.get('database_class_1')
-        # self.database_name = db_name
         self.path = os.path.expanduser('~')
+        ch_path = f'{self.path}/{self.dbfolder}'
+        if os.path.isdir(ch_path) == False:
+            self.dbfolder = "Dropbox/yuyu-farm/data"
+
         if db_name != "":
             self.dbpath = f'{self.path}/{self.dbfolder}/{self.database_name}'
             self.conn = sqlite3.connect(self.dbpath)
@@ -193,7 +222,7 @@ class Database():
     def pd_read_attach_query(self, sql_text, table_name, databases=[]):
         df_0 = []
         for db in self.database_list:
-            sub_dbpath = f'{self.path}/{self.dbfolder}/{db}'
+            sub_dbpath = f'{self.path}/{self.dbfolder}/{db.strip()}'
             self.conn = sqlite3.connect(sub_dbpath)
             self.cur = self.conn.cursor()
             check_sql = f"select * from sqlite_master where type='table'"

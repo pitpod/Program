@@ -150,9 +150,17 @@
      <string>設定</string>
     </property>
     <addaction name="hr_times"/>
+    <addaction name="config"/>
+   </widget>
+   <widget class="QMenu" name="menu_3">
+    <property name="title">
+     <string>・・・</string>
+    </property>
+    <addaction name="version"/>
    </widget>
    <addaction name="menu"/>
    <addaction name="menu_2"/>
+   <addaction name="menu_3"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="print">
@@ -168,6 +176,16 @@
   <action name="reload">
    <property name="text">
     <string>再読込</string>
+   </property>
+  </action>
+  <action name="config">
+   <property name="text">
+    <string>環境設定</string>
+   </property>
+  </action>
+  <action name="version">
+   <property name="text">
+    <string>バージョン情報</string>
    </property>
   </action>
  </widget>

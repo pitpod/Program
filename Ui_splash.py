@@ -43,7 +43,7 @@ class Ui_Splash(object):
         self.label_title.setMaximumSize(QtCore.QSize(300, 16777215))
         font = QtGui.QFont()
         font.setFamily("ＭＳ Ｐゴシック")
-        font.setPointSize(40)
+        font.setPointSize(37)
         self.label_title.setFont(font)
         self.label_title.setStyleSheet("color: rgb(255, 255, 0);")
         self.label_title.setAlignment(QtCore.Qt.AlignCenter)
@@ -107,7 +107,7 @@ class Ui_Splash(object):
     def retranslateUi(self, Splash):
         _translate = QtCore.QCoreApplication.translate
         Splash.setWindowTitle(_translate("Splash", "MainWindow"))
-        self.label_title.setText(_translate("Splash", "<html><head/><body><p>乗馬回数</p></body></html>"))
+        self.label_title.setText(_translate("Splash", "鞍数チェック"))
         self.label_description.setText(_translate("Splash", "<html><head/><body><p>月もしくは週毎の乗馬回数チェックリスト</p></body></html>"))
         self.label_loading.setText(_translate("Splash", "loading..."))
         self.label_credits.setText(_translate("Splash", "<html><head/><body><p><span style=\" font-weight:600;\">Created</span>: Kouji Matsumoto</p></body></html>"))

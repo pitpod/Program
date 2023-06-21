@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+import os
 from PyQt5.QtWidgets import QMainWindow, QFileDialog, QMessageBox
 from reportlab.pdfgen import canvas
 from reportlab.pdfbase import pdfmetrics
@@ -11,7 +13,9 @@ class ReportlabView(QMainWindow):
     def __init__(self) -> None:
         super().__init__()
 
-    def pdf_write(self, lastdayNo, week_num, df = [], sat = [], sun = [], header2=[], hr_pd=[]):
+    def pdf_write(self, yearNo, monthNo, df = [], sat = [], sun = [], header2=[], hr_pd=[]):
+        self.yearNo = yearNo
+        self.monthNo = monthNo
         self.sat = sat
         self.sun = sun
 
@@ -20,7 +24,7 @@ class ReportlabView(QMainWindow):
         hr_pd_full = df
         hr_pd_full.columns = headers
 
-        nu_lines = int((210 - 10) / 7)  # 1ページの行数
+        nu_lines = int((210 - 30) / 7)  # 1ページの行数
         row_len = len(df)               # 総行数
 
         # ページ数 ---------------------------------
@@ -30,12 +34,22 @@ class ReportlabView(QMainWindow):
         # ------------------------------------------
 
         # 縦型A4のCanvasを準備
-        save_pdfname = QFileDialog.getSaveFileName(self, 'Save File', '')
+        cur_path = os.path.dirname(__file__)
+        save_pdfname = QFileDialog.getSaveFileName(self,"保存場所を選択してください。","","PDF Files (*.pdf)")
+        # save_pdfname = QFileDialog.getSaveFileName(self, 'Save File', '',"PDF Files (*.pdf)")
         save_pdfpass = save_pdfname[0]
         self.cv = canvas.Canvas(save_pdfpass, pagesize=landscape(A4))
+        # save_pdfpass = save_pdfpass.replace(".pdf","")
+        # self.cv = canvas.Canvas('f{save_pdfpass}.pdf', pagesize=landscape(A4))
         # cv = canvas.Canvas(save_pdfpass, pagesize=portrait(A4))
         # フォント登録
         pdfmetrics.registerFont(UnicodeCIDFont('HeiseiKakuGo-W5'))
+        # 線の太さ
+        self.cv.setLineWidth(1)
+        # 線を描画(始点x、始点y、終点x、終点y)
+        # フォントサイズ定義
+        font_size = 12
+        self.cv.setFont('HeiseiKakuGo-W5', font_size)
 
         # 列幅を設定 ------------------------------------------------------
         # col_len = len(hr_pd_full.columns)
@@ -66,14 +80,6 @@ class ReportlabView(QMainWindow):
 
         # -----------------------------------------------------------------------------
 
-        # 線の太さ
-        self.cv.setLineWidth(1)
-        # 線を描画(始点x、始点y、終点x、終点y)
-        # フォントサイズ定義
-        font_size = 12
-        self.cv.setFont('HeiseiKakuGo-W5', font_size)
-
-        self.cv.line(65*mm, 286*mm, 145*mm, 286*mm)
 
         # 保存
         self.cv.save()
@@ -85,6 +91,15 @@ class ReportlabView(QMainWindow):
         msgBox.exec_()
 
     def pdf_table(self, hr_pd_times, hr_pd_p, hr_pd_pdf_1p, col_width, nu_lines):
+        # 線の太さ
+        self.cv.setLineWidth(1)
+        # フォントサイズ定義
+        font_size = 12
+        self.cv.setFont('HeiseiKakuGo-W5', font_size)
+        self.cv.drawString(10*mm, 201*mm, f'{self.yearNo}年{self.monthNo}月')
+        # 線を描画(始点x、始点y、終点x、終点y)
+        self.cv.line(10*mm, 200*mm, 80*mm, 200*mm)
+
         bg_sat = []
         bg_sun = []
         bg_hr = []
@@ -97,6 +112,7 @@ class ReportlabView(QMainWindow):
             for col in row:
                 if col != 0:
                     bg_hr.append(('BACKGROUND', (col, idx), (col, idx), colors.CMYKColor(0,0,0.3,0)))
+                    bg_hr.append(('BACKGROUND', (col, idx), (col, idx), colors.HexColor('#B0E000')))
                 if col == -1:
                     bg_hr.append(('BACKGROUND', (1, idx), (-1, idx), colors.CMYKColor(0.3,0,0.3,0)))
             idx += 1
@@ -119,7 +135,7 @@ class ReportlabView(QMainWindow):
         ]
         style = style + bg_sat + bg_sun + bg_hr
         table.setStyle(TableStyle(style))
-        origin = 210 -10 - 7*(len(hr_pd_p))
+        origin = 210 -20 - 7*(len(hr_pd_p))
         table.wrapOn(self.cv, 10*mm, origin*mm) # table位置
         table.drawOn(self.cv, 10*mm, origin*mm)
         return table

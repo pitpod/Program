@@ -87,14 +87,14 @@
        <property name="font">
         <font>
          <family>ＭＳ Ｐゴシック</family>
-         <pointsize>40</pointsize>
+         <pointsize>37</pointsize>
         </font>
        </property>
        <property name="styleSheet">
         <string notr="true">color: rgb(255, 255, 0);</string>
        </property>
        <property name="text">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;乗馬回数&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string>鞍数チェック</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>

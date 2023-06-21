@@ -29,6 +29,11 @@ class Splash(QMainWindow):
         # UI ==> INTERFACE CODES
         ########################################################################
 
+        self.ui.dropShadowFrame.setStyleSheet("QFrame {    \n"
+"    background-color: rgb(112, 146, 190);    \n"
+"    color: rgb(220, 255, 220);\n"
+"    border-radius: 10px;\n"
+"}")
         # REMOVE TITLE BAR
         self.setWindowFlag(QtCore.Qt.FramelessWindowHint)
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground)

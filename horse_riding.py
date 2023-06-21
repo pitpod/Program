@@ -1,18 +1,21 @@
+# -*- coding: utf-8 -*-
 import sys
 import os
 import calendar
 import pandas as pd
 import configparser
-import numpy
 from pdf_print import ReportlabView
 from datetime import datetime, timedelta
+from PyQt5 import QtGui
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QApplication, QMainWindow, QDesktopWidget
+from PyQt5.QtWidgets import QApplication, QMainWindow, QDesktopWidget, QMessageBox
 from view_class import Database, ViewModel
 from Ui_main_window import Ui_MainWindow
-from view_class import Database
+from config import ConfWindow
 from pdf_print import ReportlabView
 from horse_riding_sub import Subwindow
+from reportlab.lib import colors
+
 class Application(QMainWindow):
     def __init__(self, parent=None):
         super(Application, self).__init__(parent)
@@ -21,25 +24,68 @@ class Application(QMainWindow):
 
         self.pdf = ReportlabView()
         self.sub = Subwindow(self)
+        self.conf = ConfWindow(self)
         self.sd = SerialData()
 
-        """ iniファイル読込
+        """ メインウィンドウをセンターに
         """
+        desktop_x = QDesktopWidget().availableGeometry().width()
+        desktop_y = QDesktopWidget().availableGeometry().height()
+        self.resize(desktop_x - 100, desktop_y - 400)
+        wsize = self.size()
+        center = QDesktopWidget().availableGeometry().center()
+        center.setX(int(center.x()-wsize.width()/2))
+        center.setY(int(center.y()-wsize.height()/2))
+        self.move(center)
+        """ iniファイル読込
+        ini_cur_path = os.path.dirname(__file__)
+        config_ini = configparser.ConfigParser()
+        config_ini_path = f"{ini_cur_path}\\config.ini"
+        """
+        """
+        with open(config_ini_path, encoding='utf-8') as fp:
+            config_ini.read_file(fp)
+            database_class = config_ini['DATABASE_CLASS']
+            self.database_name = database_class.get('database_class_1')
+        """
+        self.ui.lineEdit_year.setText(str(datetime.today().year))
+        self.ui.comboBox_month.setCurrentText(str(datetime.today().month))
+        self.reload()
+        self.ui.hr_times.triggered.connect(lambda:self.sub.hr_times())
+        self.ui.config.triggered.connect(lambda:self.conf.conf_window())
+        self.ui.reload.triggered.connect(lambda:self.table_data())
+        self.ui.comboBox_month.currentIndexChanged.connect(lambda:self.table_data())
+        self.ui.print.triggered.connect(lambda:self.pdf.pdf_write(self.yearNo, self.monthNo, self.riding_name, self.sat, self.sun, self.header2, self.hr_pd.astype(int)))
+        self.ui.reload_button.clicked.connect(lambda:self.reload())
+        self.ui.version.triggered.connect(lambda:self.version("バージョン : 1.0.0"))
+
+    def version(self, ms_text):
+        msgBox = QMessageBox()
+        msgBox.setText(ms_text)
+        msgBox.setIcon(QMessageBox.Icon.Information)
+        msgBox.setStandardButtons(QMessageBox.Ok)
+        msgBox.exec_()
+
+    def reload(self):
+        self.read_ini()
+        self.table_data()
+
+    def read_ini(self):
+        """_summary_
+        """
+        cur_month = self.ui.comboBox_month.currentText()
+        this_month = str(datetime.today().month)
+        if cur_month == this_month:
+            cur_month = this_month
         ini_cur_path = os.path.dirname(__file__)
         config_ini = configparser.ConfigParser()
         config_ini_path = f"{ini_cur_path}\\config.ini"
         with open(config_ini_path, encoding='utf-8') as fp:
             config_ini.read_file(fp)
             database_class = config_ini['DATABASE_CLASS']
-            # self.database_list = database_class.get('database').split(",")
             self.database_name = database_class.get('database_class_1')
         self.ui.lineEdit_year.setText(str(datetime.today().year))
-        self.ui.comboBox_month.setCurrentText(str(datetime.today().month))
-        self.table_data()
-        self.ui.hr_times.triggered.connect(self.sub.hr_times)
-        self.ui.reload.triggered.connect(self.table_data)
-        self.ui.print.triggered.connect(lambda:self.pdf.pdf_write(self.y_m_d[1], self.week_num_fd, self.riding_name, self.sat, self.sun, self.header2, self.hr_pd.astype(int)))
-        self.ui.reload_button.clicked.connect(self.table_data)
+        self.ui.comboBox_month.setCurrentText(cur_month)
 
     def table_data(self):
         self.yearNo = self.ui.lineEdit_year.text()
@@ -69,6 +115,7 @@ class Application(QMainWindow):
         sqlstr_hr = 'SELECT receive_no, weekly, monthly FROM horse_riding WHERE weekly != 0 OR monthly != 0'
         hr_times_pd = hr_times_db.pd_read_query(sqlstr_hr)
         del hr_times_db
+
         # 乗馬リストに無いデータを削除 -----------------------------------------------------
         hr_check_list = hr_times_pd.iloc[:,0].to_list()
         for index2, row in self.df.iterrows():
@@ -166,6 +213,10 @@ def resource_path(relative):
         return os.path.join(sys._MEIPASS, relative)
     return os.path.join(os.path.abspath('.'), relative)
 
+def re_ini():
+    Application.read_ini()
+    Application.table_data()
+
 def main():
     app = QApplication(sys.argv)
 
@@ -175,17 +226,6 @@ def main():
     # app.setWindowIcon(QIcon(resource_path('image//logo.png')))
     MainWindow = Application()
     MainWindow.show()
-
-    """ メインウィンドウをセンターに
-    """
-    desktop_x = QDesktopWidget().availableGeometry().width()
-    desktop_y = QDesktopWidget().availableGeometry().height()
-    MainWindow.resize(desktop_x - 100, desktop_y - 400)
-    wsize = MainWindow.size()
-    center = QDesktopWidget().availableGeometry().center()
-    center.setX(int(center.x()-wsize.width()/2))
-    center.setY(int(center.y()-wsize.height()/2))
-    MainWindow.move(center)
 
     sys.exit(app.exec_())
 

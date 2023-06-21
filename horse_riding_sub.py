@@ -1,7 +1,7 @@
+# -*- coding: utf-8 -*-
 import sys
 import pandas as pd
 from PyQt5  import QtGui
-from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt, QAbstractTableModel
 from PyQt5.QtWidgets import QApplication, QMainWindow, QSizePolicy
 from PyQt5.QtWidgets import  QDesktopWidget, QMessageBox, QDialog
@@ -25,13 +25,19 @@ class Subwindow(QMainWindow):
 
     def check_data(self):
         if not self.vm.wr_list:
-            msg = QMessageBox()
-            msg.setWindowTitle("メッセージボックス")
-            msg.setText("変更がありません")
-            msg.setStandardButtons(QMessageBox.Ok)
-            x = msg.exec_()
+            ch_name_text = "変更がありません"
         else:
-            self.write_data()
+            ch_list = self.write_data()
+            ch_name_text = ""
+            ch_name_list = set(ch_list.iloc[:,1])
+            for ch_name in ch_name_list:
+                ch_name_text = f'{ch_name_text}\n{ch_name}'
+            ch_name_text = f'{ch_name_text}\nを変更しました'
+        msg = QMessageBox()
+        msg.setWindowTitle("メッセージボックス")
+        msg.setText(ch_name_text)
+        msg.setStandardButtons(QMessageBox.Ok)
+        x = msg.exec_()
 
     def write_data(self):
         hr_times_db = Database("name_list-3.db")
@@ -58,6 +64,7 @@ class Subwindow(QMainWindow):
                 if ret:
                     sqlstr = f'DELETE FROM horse_riding WHERE receive_no = "{re_no}"'
                     hr_times_db.database_write(sqlstr)
+        return hr_df
 
 class ViewModel():
     def __init__(self, ui, df = []) -> None:
@@ -92,8 +99,10 @@ class ViewModel():
         col_width = 40
         # self.ui.tableView_name.setColumnWidth(0,col_width_0)
         for i in range(5):
-            if i <= 2:
-                col_width = 80
+            if i < 2:
+                col_width = 100
+            elif i == 2:
+                col_width = 120
             else:
                 col_width = 40
             self.ui.tableView_name.setColumnWidth(i,col_width)
