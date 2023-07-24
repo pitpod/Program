@@ -106,6 +106,9 @@ class Application(QMainWindow):
             'ORDER BY name_phonetic IS NULL ASC, name_phonetic, name,date'
         db = Database()
         ret_pd = db.pd_read_attach_query(sqlStr, self.yearNo)
+        if ret_pd.empty:
+            QMessageBox.warning(None, "警告", "当月分のデータがありません。", QMessageBox.Yes)
+            exit()
         self.df = ret_pd.groupby('receipt_number').agg({'name_phonetic':self.name_text,'name':self.name_text, 'date':list})
         self.df = self.df.sort_values('name_phonetic')
         self.df = self.df.drop('name_phonetic', axis=1)
