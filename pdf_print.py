@@ -19,7 +19,7 @@ class ReportlabView(QMainWindow):
         self.sat = sat
         self.sun = sun
 
-        headers = ['氏名（週:月）']
+        headers = ['氏名（実施:上限）']
         headers = headers + header2
         hr_pd_full = df
         hr_pd_full.columns = headers

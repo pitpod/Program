@@ -11,7 +11,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-class Ui_riding_list_window(object):
+class Ui_program_list_window(object):
     def setupUi(self, riding_list_window):
         riding_list_window.setObjectName("riding_list_window")
         riding_list_window.resize(482, 681)

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'c:\Users\User\Documents\VS_Code\HorseRiding\splash.ui'
+# Form implementation generated from reading ui file 'c:\Users\User\Documents\VS_Code\Program\splash.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.7
 #
@@ -43,7 +43,7 @@ class Ui_Splash(object):
         self.label_title.setMaximumSize(QtCore.QSize(300, 16777215))
         font = QtGui.QFont()
         font.setFamily("ＭＳ Ｐゴシック")
-        font.setPointSize(37)
+        font.setPointSize(23)
         self.label_title.setFont(font)
         self.label_title.setStyleSheet("color: rgb(255, 255, 0);")
         self.label_title.setAlignment(QtCore.Qt.AlignCenter)
@@ -107,7 +107,7 @@ class Ui_Splash(object):
     def retranslateUi(self, Splash):
         _translate = QtCore.QCoreApplication.translate
         Splash.setWindowTitle(_translate("Splash", "MainWindow"))
-        self.label_title.setText(_translate("Splash", "鞍数チェック"))
-        self.label_description.setText(_translate("Splash", "<html><head/><body><p>月もしくは週毎の乗馬回数チェックリスト</p></body></html>"))
+        self.label_title.setText(_translate("Splash", "プログラム回数チェック"))
+        self.label_description.setText(_translate("Splash", "<html><head/><body><p>プログラム実施回数チェックリスト</p></body></html>"))
         self.label_loading.setText(_translate("Splash", "loading..."))
         self.label_credits.setText(_translate("Splash", "<html><head/><body><p><span style=\" font-weight:600;\">Created</span>: Kouji Matsumoto</p></body></html>"))

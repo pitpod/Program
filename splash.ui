@@ -87,14 +87,14 @@
        <property name="font">
         <font>
          <family>ＭＳ Ｐゴシック</family>
-         <pointsize>37</pointsize>
+         <pointsize>23</pointsize>
         </font>
        </property>
        <property name="styleSheet">
         <string notr="true">color: rgb(255, 255, 0);</string>
        </property>
        <property name="text">
-        <string>鞍数チェック</string>
+        <string>プログラム回数チェック</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
@@ -125,7 +125,7 @@
         <string notr="true">color: rgb(255, 255, 255);</string>
        </property>
        <property name="text">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;月もしくは週毎の乗馬回数チェックリスト&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;プログラム実施回数チェックリスト&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>

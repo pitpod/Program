@@ -28,11 +28,13 @@ class ConfWindow(QMainWindow):
             self.color_C = color.get('color_C')
             self.color_D = color.get('color_D')
             self.color_E = color.get('color_E')
+            self.color_F = color.get('color_F')
 
-        B = (int(self.color_B[1:3],16),int(self.color_B[3:5],16),int(self.color_B[5:7],16))
-        C = (int(self.color_C[1:3],16),int(self.color_C[3:5],16),int(self.color_C[5:7],16))
-        D = (int(self.color_D[1:3],16),int(self.color_D[3:5],16),int(self.color_D[5:7],16))
-        E = (int(self.color_E[1:3],16),int(self.color_E[3:5],16),int(self.color_E[5:7],16))
+        B = (int(self.color_B[2:4],16),int(self.color_B[4:6],16),int(self.color_B[6:8],16))
+        C = (int(self.color_C[2:4],16),int(self.color_C[4:6],16),int(self.color_C[6:8],16))
+        D = (int(self.color_D[2:4],16),int(self.color_D[4:6],16),int(self.color_D[6:8],16))
+        E = (int(self.color_E[2:4],16),int(self.color_E[4:6],16),int(self.color_E[6:8],16))
+        F = (int(self.color_F[2:4],16),int(self.color_F[4:6],16),int(self.color_F[6:8],16))
 
         # ラジオボタンのグループ登録用オブジェクト
         self.radioGroup = QtWidgets.QButtonGroup()
@@ -53,13 +55,13 @@ class ConfWindow(QMainWindow):
 
         gv = self.ui.graphicsView_1
         self.slider_R1 = self.ui.horizontalSlider_R1
-        self.slider_R1.valueChanged.connect(lambda:self.color(gv))
+        self.slider_R1.valueChanged.connect(lambda:self.colorValue(gv))
 
         self.slider_G1 = self.ui.horizontalSlider_G1
-        self.slider_G1.valueChanged.connect(lambda:self.color(gv))
+        self.slider_G1.valueChanged.connect(lambda:self.colorValue(gv))
 
         self.slider_B1 = self.ui.horizontalSlider_B1
-        self.slider_B1.valueChanged.connect(lambda:self.color(gv))
+        self.slider_B1.valueChanged.connect(lambda:self.colorValue(gv))
 
 
         brush = QtGui.QBrush(QtGui.QColor(D[0], D[1], D[2]))
@@ -78,19 +80,19 @@ class ConfWindow(QMainWindow):
     def radio_click(self, bcde):
         self.color_radio_id = self.radioGroup.checkedId()
         if self.color_radio_id == 1:
-            color_num = self.color_D
+            color_num = self.color_D[2:8]
         elif self.color_radio_id == 2:
-            color_num = self.color_E
+            color_num = self.color_E[2:8]
         elif self.color_radio_id == 3:
-            color_num = self.color_B
+            color_num = self.color_B[2:8]
         elif self.color_radio_id == 4:
-            color_num = self.color_C
+            color_num = self.color_C[2:8]
         self.ui.html_color.setText(color_num)
         self.slider_R1.setValue(bcde[0])
         self.slider_G1.setValue(bcde[1])
         self.slider_B1.setValue(bcde[2])
 
-    def color(self, gv):
+    def colorValue(self, gv):
         self.gv = gv
         R1 = self.slider_R1.value()
         G1 = self.slider_G1.value()
@@ -118,10 +120,13 @@ class ConfWindow(QMainWindow):
         data_path = QFileDialog.getExistingDirectory(self, 'データベースフォルダ', os.path.expanduser('~'))
         user_path = os.path.expanduser('~')
         f_path = data_path[len(user_path)+1:]
-        self.ui.lineEdit.setText(f_path)
-        config = ConfigObj(self.config_ini_path, encoding='utf-8')
-        config['DATA_FOLDER']['dbfile'] = f_path
-        config.write()
+        if f_path == '':
+            pass
+        else:
+            self.ui.lineEdit.setText(f_path)
+            config = ConfigObj(self.config_ini_path, encoding='utf-8')
+            config['DATA_FOLDER']['dbfile'] = f_path
+            config.write()
 
     def closeEvent(self, a0: QCloseEvent) -> None:
         return super().closeEvent(a0)

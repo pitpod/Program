@@ -6,6 +6,7 @@ import sqlite3
 import configparser
 from PyQt5 import QtGui, QtCore, QtWidgets
 from PyQt5.QtCore import Qt, QAbstractTableModel
+from PyQt5.QtGui import QColor
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QSizePolicy
 from reportlab.lib.units import mm
@@ -34,31 +35,34 @@ with open(config_ini_path, encoding='utf-8') as fp:
     color_C = color.get('color_C')
     color_D = color.get('color_D')
     color_E = color.get('color_E')
+    color_F = color.get('color_F')
 
 # Painter COLOR ----- #
-color_A = (255, 255, 255)
-html_color = '#%02X%02X%02X' % (color_A[0],color_A[1],color_A[2])
-BACKGROUND_BASE_COLOR_A = QtGui.QColor(html_color)
+color_A = (33, 255, 255, 255)
+html_color = '#%02X%02X%02X%02X' % (color_A[0],color_A[1],color_A[2],color_A[3])
+BACKGROUND_BASE_COLOR_A = QColor(html_color)
 # color_B = (247, 201, 221)
 # html_color = '#%02X%02X%02X' % (color_B[0],color_B[1],color_B[2])
-BACKGROUND_BASE_COLOR_B = QtGui.QColor(color_B)
+BACKGROUND_BASE_COLOR_B = QColor(f'#{color_B}')
 # color_C = (186, 227, 249)
 # html_color = '#%02X%02X%02X' % (color_C[0],color_C[1],color_C[2])
-BACKGROUND_BASE_COLOR_C = QtGui.QColor(color_C)
+BACKGROUND_BASE_COLOR_C = QColor(f'#{color_C}')
 # color_D = (255, 251, 199)
 # html_color = '#%02X%02X%02X' % (color_D[0],color_D[1],color_D[2])
-BACKGROUND_BASE_COLOR_D = QtGui.QColor(color_D)
+BACKGROUND_BASE_COLOR_D = QColor(f'#{color_D}')
 # BACKGROUND_BASE_COLOR_E = QtGui.QColor(190, 223, 194)
 # color_E = (190, 223, 194)
 # html_color = '#%02X%02X%02X' % (color_E[0],color_E[1],color_E[2])
-BACKGROUND_BASE_COLOR_E = QtGui.QColor(color_E)
+BACKGROUND_BASE_COLOR_E = QColor(f'#{color_E}')
 
-STATUS_FONT_COLOR = QtGui.QColor(255, 255, 255)
+BACKGROUND_BASE_COLOR_F = QColor(f'#{color_F}')
 
-BACKGROUND_SELECTED = QtGui.QColor(204, 230, 255)
-BACKGROUND_FOCUS = QtGui.QColor(240, 248, 255)
+STATUS_FONT_COLOR = QColor(255, 255, 255, 160)
 
-FONT_BASE_COLOR = QtGui.QColor(0, 0, 0)
+BACKGROUND_SELECTED = QColor(204, 230, 255)
+BACKGROUND_FOCUS = QColor(240, 248, 255)
+
+FONT_BASE_COLOR = QColor(0, 0, 0)
 
 class ViewModel():
     def __init__(self, ui, lastdayNo, week_num, hr_times_month, df = [], sat = [], sun = [], header2=[], hr_pd=[]) -> None:
@@ -75,7 +79,7 @@ class ViewModel():
         self.tableview()
 
     def tableview(self):
-        headers = ['氏名（週:月）']
+        headers = ['氏名（実施:上限）']
         # for i in range(1, self.lastdayNo + 1):
         #     headers.append(i)
         headers = headers + self.header2
@@ -92,13 +96,13 @@ class ViewModel():
         pol.setHorizontalStretch(1)
         self.ui.tableView.setSizePolicy(pol)
 
-        col_width_0 = 80
+        col_width_0 = 100
         col_width = 10
         self.ui.tableView.setColumnWidth(0,col_width_0)
         for i in range(1, self.lastdayNo + self.week_num + 1):
             self.ui.tableView.setColumnWidth(i,col_width)
-        # window_width = col_width * i + col_width_0
-        # self.ui.tableView.setFixedSize(window_width + 200,800)
+        window_width = col_width * i + col_width_0
+        # self.ui.tableView.setFixedSize(window_width + 200, 800)
 
 class MyTableModel(QAbstractTableModel):
     def __init__(self, list, headers = [], parent = None):
@@ -163,14 +167,7 @@ class TableDelegate(QtWidgets.QItemDelegate):
     def paint(self, painter, option, index):
         # 背景色を指定する
         bgColor = BACKGROUND_BASE_COLOR_A
-        if index.column() in self.sun:
-            bgColor = BACKGROUND_BASE_COLOR_B
-        if index.column() in self.sat:
-            bgColor = BACKGROUND_BASE_COLOR_C
         data = index.data()
-        # print(index.row())
-        # hr_list = self.hr_pd.iloc[1,:].astype('int').to_list()
-        # if index.row() in [3, 10, 28]:
         hr_list = self.hr_pd.iloc[index.row(),:].to_list()
         in_col = index.column()
         if index.column() != 0:
@@ -178,11 +175,20 @@ class TableDelegate(QtWidgets.QItemDelegate):
                 bgColor = BACKGROUND_BASE_COLOR_D
             if hr_list[0] == -1:
                 bgColor = BACKGROUND_BASE_COLOR_E
+            if hr_list[0] == -2:
+                bgColor = BACKGROUND_BASE_COLOR_F
 
         if option.state & QtWidgets.QStyle.State_Selected:
             bgColor = BACKGROUND_SELECTED
+
         if option.state & QtWidgets.QStyle.State_HasFocus:
             bgColor = BACKGROUND_FOCUS
+
+        # 土日色設定
+        if index.column() in self.sun:
+            bgColor = BACKGROUND_BASE_COLOR_B
+        if index.column() in self.sat:
+            bgColor = BACKGROUND_BASE_COLOR_C
 
         brush = QtGui.QBrush(bgColor)
         painter.fillRect(option.rect, brush)
