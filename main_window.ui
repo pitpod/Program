@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1003</width>
-    <height>620</height>
+    <width>920</width>
+    <height>638</height>
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -22,7 +22,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,1,1,8">
+     <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,1,0,1,8">
       <item>
        <widget class="QLineEdit" name="lineEdit_year"/>
       </item>
@@ -91,6 +91,9 @@
        </widget>
       </item>
       <item>
+       <widget class="QComboBox" name="comboBox"/>
+      </item>
+      <item>
        <widget class="QPushButton" name="reload_button">
         <property name="text">
          <string>再表示</string>
@@ -125,6 +128,9 @@
         <pointsize>9</pointsize>
        </font>
       </property>
+      <attribute name="horizontalHeaderVisible">
+       <bool>true</bool>
+      </attribute>
      </widget>
     </item>
    </layout>
@@ -134,7 +140,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1003</width>
+     <width>920</width>
      <height>22</height>
     </rect>
    </property>

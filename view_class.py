@@ -4,11 +4,13 @@ import os
 import pandas as pd
 import sqlite3
 import configparser
+from configparser import ConfigParser
+from configobj import ConfigObj
 from PyQt5 import QtGui, QtCore, QtWidgets
 from PyQt5.QtCore import Qt, QAbstractTableModel
 from PyQt5.QtGui import QColor
 from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QSizePolicy
+from PyQt5.QtWidgets import QSizePolicy, QMessageBox
 from reportlab.lib.units import mm
 from enum import IntEnum, auto
 
@@ -26,7 +28,7 @@ class StatusItem:
 """ iniファイル読込
 """
 ini_cur_path = os.path.dirname(__file__)
-config_ini = configparser.ConfigParser()
+config_ini = ConfigParser()
 config_ini_path = f"{ini_cur_path}\\config.ini"
 with open(config_ini_path, encoding='utf-8') as fp:
     config_ini.read_file(fp)
@@ -59,12 +61,14 @@ BACKGROUND_BASE_COLOR_F = QColor(f'#{color_F}')
 
 STATUS_FONT_COLOR = QColor(255, 255, 255, 160)
 
-BACKGROUND_SELECTED = QColor(204, 230, 255)
-BACKGROUND_FOCUS = QColor(240, 248, 255)
+BACKGROUND_SELECTED = QColor(200, 100, 100, 155)
+BACKGROUND_FOCUS = QColor(100, 248, 100)
 
 FONT_BASE_COLOR = QColor(0, 0, 0)
 
+
 class ViewModel():
+    WINDOW_WIDTH = 0
     def __init__(self, ui, lastdayNo, week_num, hr_times_month, df = [], sat = [], sun = [], header2=[], hr_pd=[]) -> None:
         self.df = df
         self.sat = sat
@@ -79,7 +83,7 @@ class ViewModel():
         self.tableview()
 
     def tableview(self):
-        headers = ['氏名（実施:上限）']
+        headers = ['氏名（実施:契約日数）']
         # for i in range(1, self.lastdayNo + 1):
         #     headers.append(i)
         headers = headers + self.header2
@@ -96,12 +100,13 @@ class ViewModel():
         pol.setHorizontalStretch(1)
         self.ui.tableView.setSizePolicy(pol)
 
-        col_width_0 = 100
+        col_width_0 = 120
         col_width = 10
         self.ui.tableView.setColumnWidth(0,col_width_0)
         for i in range(1, self.lastdayNo + self.week_num + 1):
+            pass
             self.ui.tableView.setColumnWidth(i,col_width)
-        window_width = col_width * i + col_width_0
+        ViewModel.WINDOW_WIDTH = col_width * i + col_width_0
         # self.ui.tableView.setFixedSize(window_width + 200, 800)
 
 class MyTableModel(QAbstractTableModel):
@@ -170,6 +175,8 @@ class TableDelegate(QtWidgets.QItemDelegate):
         data = index.data()
         hr_list = self.hr_pd.iloc[index.row(),:].to_list()
         in_col = index.column()
+
+        # 日数をチェックして背景色を変える
         if index.column() != 0:
             if index.column() in hr_list:
                 bgColor = BACKGROUND_BASE_COLOR_D
@@ -182,7 +189,8 @@ class TableDelegate(QtWidgets.QItemDelegate):
             bgColor = BACKGROUND_SELECTED
 
         if option.state & QtWidgets.QStyle.State_HasFocus:
-            bgColor = BACKGROUND_FOCUS
+            bgColor = BACKGROUND_SELECTED
+            # bgColor = BACKGROUND_FOCUS
 
         # 土日色設定
         if index.column() in self.sun:
@@ -201,7 +209,7 @@ class TableDelegate(QtWidgets.QItemDelegate):
 class Database():
     def __init__(self, db_name="") -> None:
         ini_cur_path = os.path.dirname(__file__)
-        config_ini = configparser.ConfigParser()
+        config_ini = ConfigParser()
         config_ini_path = f"{ini_cur_path}\\config.ini"
         with open(config_ini_path, encoding='utf-8') as fp:
             config_ini.read_file(fp)
@@ -212,13 +220,25 @@ class Database():
             self.database_name = database_class.get('database_class_1')
         self.path = os.path.expanduser('~')
         ch_path = f'{self.path}/{self.dbfolder}'
+
         if os.path.isdir(ch_path) == False:
             self.dbfolder = "Dropbox/yuyu-farm/data"
+            self.message(f'{ch_path}が見当たらないので{self.dbfolder}を使用します。')
+            config = ConfigObj(config_ini_path, encoding='utf-8')
+            config['DATA_FOLDER']['dbfile'] = self.dbfolder
+            config.write()
 
         if db_name != "":
             self.dbpath = f'{self.path}/{self.dbfolder}/{self.database_name}'
             self.conn = sqlite3.connect(self.dbpath)
             self.cur = self.conn.cursor()
+
+    def message(self, ms_text):
+        msgBox = QMessageBox()
+        msgBox.setText(ms_text)
+        msgBox.setIcon(QMessageBox.Icon.Information)
+        msgBox.setStandardButtons(QMessageBox.Ok)
+        msgBox.exec_()
 
     def pd_read_query(self, sql_text):
         self.sql_text = sql_text
@@ -227,6 +247,8 @@ class Database():
 
     def pd_read_attach_query(self, sql_text, table_name, databases=[]):
         df_0 = []
+        if databases:
+            self.database_list = databases
         for db in self.database_list:
             sub_dbpath = f'{self.path}/{self.dbfolder}/{db.strip()}'
             self.conn = sqlite3.connect(sub_dbpath)

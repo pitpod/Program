@@ -1,4 +1,4 @@
-('C:\\Users\\User\\Documents\\VS_Code\\Program\\build\\program\\プログラム回数チェック.pkg',
+('C:\\Users\\User\\Documents\\VS_Code\\Program\\build\\program\\契約日数チェック.pkg',
  {'BINARY': True,
   'DATA': True,
   'EXECUTABLE': True,

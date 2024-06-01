@@ -13,13 +13,26 @@ class ReportlabView(QMainWindow):
     def __init__(self) -> None:
         super().__init__()
 
-    def pdf_write(self, yearNo, monthNo, df = [], sat = [], sun = [], header2=[], hr_pd=[]):
+    def pdf_write(self, chargetext, yearNo, monthNo, df = [], sat = [], sun = [], header2=[], hr_pd=[]):
+        """PDF書出し
+
+        Args:
+            chargetext (TEXT): 事業所名
+            yearNo (TEXT): 年
+            monthNo (TEXT): 月
+            df (list, optional): 実施日リスト. Defaults to [].
+            sat (list, optional): 土曜日番号リスト. Defaults to [].
+            sun (list, optional): 日曜日番号リスト. Defaults to [].
+            header2 (list, optional): ヘッダーリスト. Defaults to [].
+            hr_pd (list, optional): プログラム回数リスト. Defaults to [].
+        """
+        self.chargetext = chargetext
         self.yearNo = yearNo
         self.monthNo = monthNo
         self.sat = sat
         self.sun = sun
 
-        headers = ['氏名（実施:上限）']
+        headers = ['氏名（実施:契約日数）']
         headers = headers + header2
         hr_pd_full = df
         hr_pd_full.columns = headers
@@ -38,6 +51,8 @@ class ReportlabView(QMainWindow):
         save_pdfname = QFileDialog.getSaveFileName(self,"保存場所を選択してください。","","PDF Files (*.pdf)")
         # save_pdfname = QFileDialog.getSaveFileName(self, 'Save File', '',"PDF Files (*.pdf)")
         save_pdfpass = save_pdfname[0]
+        if save_pdfpass == "":
+            return
         self.cv = canvas.Canvas(save_pdfpass, pagesize=landscape(A4))
         # save_pdfpass = save_pdfpass.replace(".pdf","")
         # self.cv = canvas.Canvas('f{save_pdfpass}.pdf', pagesize=landscape(A4))
@@ -96,7 +111,7 @@ class ReportlabView(QMainWindow):
         # フォントサイズ定義
         font_size = 12
         self.cv.setFont('HeiseiKakuGo-W5', font_size)
-        self.cv.drawString(10*mm, 201*mm, f'{self.yearNo}年{self.monthNo}月')
+        self.cv.drawString(10*mm, 201*mm, f'{self.yearNo}年{self.monthNo}月 : {self.chargetext}')
         # 線を描画(始点x、始点y、終点x、終点y)
         self.cv.line(10*mm, 200*mm, 80*mm, 200*mm)
 
@@ -111,17 +126,24 @@ class ReportlabView(QMainWindow):
         for index, row in hr_pd_p.iterrows():
             for col in row:
                 if col != 0:
-                    bg_hr.append(('BACKGROUND', (col, idx), (col, idx), colors.CMYKColor(0,0,0.3,0)))
-                    bg_hr.append(('BACKGROUND', (col, idx), (col, idx), colors.HexColor('#B0E000')))
+                    # bg_hr.append(('BACKGROUND', (col, idx), (col, idx), colors.CMYKColor(0,0,0.3,0)))
+                    # bg_hr.append(('BACKGROUND', (col, idx), (col, idx), colors.HexColor('#55B0E000')))
+                    pass
                 if col == -1:
-                    bg_hr.append(('BACKGROUND', (1, idx), (-1, idx), colors.CMYKColor(0.3,0,0.3,0)))
+                    bg_hr.append(('BACKGROUND', (1, idx), (-1, idx), colors.CMYKColor(0.1, 0, 0.1, 0, 1, 0.5)))
+                    # bg_hr.append(('BACKGROUND', (1, idx), (-1, idx), colors.HexColor('#BEDFC2')))
+                if col == -2:
+                    bg_hr.append(('BACKGROUND', (1, idx), (-1, idx), colors.CMYKColor(0, 0, 0.5, 0, 1, 0.5)))
+                    # bg_hr.append(('BACKGROUND', (1, idx), (-1, idx), colors.HexColor('#FFFF00')))
             idx += 1
 
         for i in self.sat:
-            bg_sat.append(('BACKGROUND', (i, 0), (i, -1), colors.CMYKColor(0.3,0,0,0)))
+            # bg_sat.append(('BACKGROUND', (i, 0), (i, -1), colors.CMYKColor(0.3,0,0,0)))
+            bg_sat.append(('BACKGROUND', (i, 0), (i, -1), colors.HexColor('#BAE3F955',False, True)))
 
         for i in self.sun:
-            bg_sun.append(('BACKGROUND', (i, 0), (i, -1), colors.CMYKColor(0,0.3,0,0)))
+            # bg_sun.append(('BACKGROUND', (i, 0), (i, -1), colors.CMYKColor(0,0.3,0,0)))
+            bg_sun.append(('BACKGROUND', (i, 0), (i, -1), colors.HexColor('#F7C9DD55',False,True)))
 
         style = [
             ('FONT', (0, 0), (-1, -1), 'HeiseiKakuGo-W5', 10), # フォント
@@ -133,7 +155,7 @@ class ReportlabView(QMainWindow):
             ('ALIGN', (1,0), (-1, -1), 'CENTER'),
             ('ALIGN', (0,0),(0,0), 'CENTER')
         ]
-        style = style + bg_sat + bg_sun + bg_hr
+        style = style + bg_hr + bg_sat + bg_sun
         table.setStyle(TableStyle(style))
         origin = 210 -20 - 7*(len(hr_pd_p))
         table.wrapOn(self.cv, 10*mm, origin*mm) # table位置

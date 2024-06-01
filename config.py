@@ -113,6 +113,13 @@ class ConfWindow(QMainWindow):
         # self.ui.graphicsView.setBackgroundBrush(brush)
 
     def conf_window(self):
+        config_ini = configparser.ConfigParser()
+        ini_cur_path = os.path.dirname(__file__)
+        self.config_ini_path = f"{ini_cur_path}\\config.ini"
+        with open(self.config_ini_path, encoding='utf-8') as fp:
+            config_ini.read_file(fp)
+            database_folder = config_ini['DATA_FOLDER']
+            self.database_path = database_folder.get('dbfile')
         self.ui.lineEdit.setText(self.database_path)
         self.show()
 

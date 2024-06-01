@@ -30,7 +30,7 @@ class Splash(QMainWindow):
         ########################################################################
 
         self.ui.dropShadowFrame.setStyleSheet("QFrame {    \n"
-"    background-color: rgb(112, 146, 190);    \n"
+"    background-color: rgb(100, 100, 100);    \n"
 "    color: rgb(220, 255, 220);\n"
 "    border-radius: 10px;\n"
 "}")

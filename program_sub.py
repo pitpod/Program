@@ -19,8 +19,8 @@ class Subwindow(QMainWindow):
     def hr_times(self):
         self.show()
         hr_times_db = Database(1)
-        # sqlStr = "SELECT DISTINCT rn.receive_no, rn.name, rn.name_phonetic, hr.weekly, hr.monthly FROM receipt_number as rn LEFT OUTER JOIN program as hr ON hr.receive_no = rn.receive_no ORDER BY rn.name_phonetic ASC"
-        sqlStr = "SELECT DISTINCT rn.receive_no, rn.name, rn.name_phonetic, hr.monthly FROM receipt_number as rn LEFT OUTER JOIN program as hr ON hr.receive_no = rn.receive_no ORDER BY rn.name_phonetic ASC"
+        # sqlStr = "SELECT DISTINCT rn.receive_no, rn.name, rn.name_phonetic, hr.times_f, hr.times_h FROM receipt_number as rn LEFT OUTER JOIN program as hr ON hr.receive_no = rn.receive_no ORDER BY rn.name_phonetic ASC"
+        sqlStr = "SELECT DISTINCT rn.receive_no, rn.name, rn.name_phonetic, hr.times_f, hr.times_h FROM receipt_number as rn LEFT OUTER JOIN program as hr ON hr.receive_no = rn.receive_no ORDER BY rn.name_phonetic ASC"
         ret_hr_times = hr_times_db.pd_read_query(sqlStr)
         self.vm = ViewModel(self.ui, ret_hr_times)
 
@@ -46,23 +46,23 @@ class Subwindow(QMainWindow):
         hr_times_df = hr_df.drop(hr_df.columns[[1, 2]], axis=1)
         for col, row in hr_times_df.iterrows():
             re_no = row.iat[0]
-            # re_weekly = row.iat[1]
-            # if str(re_weekly) == "nan":
-            #     re_weekly = 0
-            re_monthly = row.iat[1]
-            if str(re_monthly) == "nan":
-                re_monthly = 0
+            re_times_f = row.iat[1]
+            if str(re_times_f) == "nan":
+                re_times_f = 0
+            re_times_h = row.iat[2]
+            if str(re_times_h) == "nan":
+                re_times_h = 0
             sqlstr = f'SELECT receive_no FROM program WHERE receive_no = "{re_no}"'
             ret = hr_times_db.database_fech(sqlstr)
-            # if re_weekly != 0 or re_monthly != 0:
-            if re_monthly != 0:
+            # if re_weekly != 0 or re_tiems_h != 0:
+            if re_times_f != 0 or re_times_h != 0:
                 if ret:
-                    # sqlstr = f'UPDATE program SET weekly = {re_weekly}, monthly = {re_monthly} WHERE receive_no = "{re_no}"'
-                    sqlstr = f'UPDATE program SET monthly = {re_monthly} WHERE receive_no = "{re_no}"'
+                    sqlstr = f'UPDATE program SET times_f = {re_times_f}, times_h = {re_times_h} WHERE receive_no = "{re_no}"'
+                    #sqlstr = f'UPDATE program SET times_h = {re_times_h} WHERE receive_no = "{re_no}"'
                     hr_times_db.database_write(sqlstr)
                 else:
-                    # sqlstr = f'INSERT INTO program(receive_no, weekly, monthly) VALUES("{re_no}",{re_weekly}, {re_monthly})'
-                    sqlstr = f'INSERT INTO program(receive_no, monthly) VALUES("{re_no}", {re_monthly})'
+                    sqlstr = f'INSERT INTO program(receive_no, times_f, times_h) VALUES("{re_no}",{re_times_f}, {re_times_h})'
+                    # sqlstr = f'INSERT INTO program(receive_no, times_h) VALUES("{re_no}", {re_times_h})'
                     hr_times_db.database_write(sqlstr)
             else:
                 if ret:
@@ -73,18 +73,11 @@ class Subwindow(QMainWindow):
 class ViewModel():
     def __init__(self, ui, df = []) -> None:
         self.df = df
-        # self.sat = sat
-        # self.sun = sun
-        # self.header2 = header2
-        # self.hr_pd = hr_pd
-        # self.col_list = self.hr_pd.columns.to_list()
-        # self.lastdayNo = lastdayNo
-        # self.week_num = week_num
         self.ui = ui
         self.tableview()
 
     def tableview(self):
-        headers = ['受給者番号','名前','なまえ', '回数']
+        headers = ['受給者番号','名前','なまえ', '風輪', 'ホーシー']
         tableData0 = self.df.to_numpy()
         # self.delegate = TableDelegate(self.sat, self.sun, self.week_num, self.hr_pd)
         font = QtGui.QFont()
@@ -102,7 +95,7 @@ class ViewModel():
         col_width_0 = 0
         col_width = 40
         # self.ui.tableView_name.setColumnWidth(0,col_width_0)
-        for i in range(4):
+        for i in range(5):
             if i < 2:
                 col_width = 100
             elif i == 2:
