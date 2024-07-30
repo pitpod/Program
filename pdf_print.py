@@ -130,20 +130,20 @@ class ReportlabView(QMainWindow):
                     # bg_hr.append(('BACKGROUND', (col, idx), (col, idx), colors.HexColor('#55B0E000')))
                     pass
                 if col == -1:
-                    bg_hr.append(('BACKGROUND', (1, idx), (-1, idx), colors.CMYKColor(0.1, 0, 0.1, 0, 1, 0.5)))
-                    # bg_hr.append(('BACKGROUND', (1, idx), (-1, idx), colors.HexColor('#BEDFC2')))
+                    # bg_hr.append(('BACKGROUND', (1, idx), (-1, idx), colors.CMYKColor(0.1, 0, 0.1, 0, 1, 0.5)))
+                    bg_hr.append(('BACKGROUND', (1, idx), (-1, idx), colors.HexColor('#BEDFC205',False, True)))
                 if col == -2:
-                    bg_hr.append(('BACKGROUND', (1, idx), (-1, idx), colors.CMYKColor(0, 0, 0.5, 0, 1, 0.5)))
-                    # bg_hr.append(('BACKGROUND', (1, idx), (-1, idx), colors.HexColor('#FFFF00')))
+                    # bg_hr.append(('BACKGROUND', (1, idx), (-1, idx), colors.CMYKColor(0, 0, 0.5, 0, 1, 0.5)))
+                     bg_hr.append(('BACKGROUND', (1, idx), (-1, idx), colors.HexColor('#FFFF0005',False, True)))
             idx += 1
 
         for i in self.sat:
             # bg_sat.append(('BACKGROUND', (i, 0), (i, -1), colors.CMYKColor(0.3,0,0,0)))
-            bg_sat.append(('BACKGROUND', (i, 0), (i, -1), colors.HexColor('#BAE3F955',False, True)))
+            bg_sat.append(('BACKGROUND', (i, 0), (i, -1), colors.HexColor('#BAE3F977',False, True)))
 
         for i in self.sun:
             # bg_sun.append(('BACKGROUND', (i, 0), (i, -1), colors.CMYKColor(0,0.3,0,0)))
-            bg_sun.append(('BACKGROUND', (i, 0), (i, -1), colors.HexColor('#F7C9DD55',False,True)))
+            bg_sun.append(('BACKGROUND', (i, 0), (i, -1), colors.HexColor('#F7C9DD77',False,True)))
 
         style = [
             ('FONT', (0, 0), (-1, -1), 'HeiseiKakuGo-W5', 10), # フォント

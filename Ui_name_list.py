@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'c:\Users\User\Documents\VS_Code\HorseRiding\name_list.ui'
+# Form implementation generated from reading ui file 'c:\Users\User\Documents\VS_Code\Program\name_list.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.7
 #
@@ -12,15 +12,15 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 
 class Ui_program_list_window(object):
-    def setupUi(self, riding_list_window):
-        riding_list_window.setObjectName("riding_list_window")
-        riding_list_window.resize(482, 681)
+    def setupUi(self, program_list_window):
+        program_list_window.setObjectName("program_list_window")
+        program_list_window.resize(482, 681)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(riding_list_window.sizePolicy().hasHeightForWidth())
-        riding_list_window.setSizePolicy(sizePolicy)
-        self.horizontalLayoutWidget = QtWidgets.QWidget(riding_list_window)
+        sizePolicy.setHeightForWidth(program_list_window.sizePolicy().hasHeightForWidth())
+        program_list_window.setSizePolicy(sizePolicy)
+        self.horizontalLayoutWidget = QtWidgets.QWidget(program_list_window)
         self.horizontalLayoutWidget.setGeometry(QtCore.QRect(9, 9, 461, 26))
         self.horizontalLayoutWidget.setObjectName("horizontalLayoutWidget")
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.horizontalLayoutWidget)
@@ -33,7 +33,7 @@ class Ui_program_list_window(object):
         self.writeButton.setMaximumSize(QtCore.QSize(100, 16777215))
         self.writeButton.setObjectName("writeButton")
         self.horizontalLayout.addWidget(self.writeButton)
-        self.verticalLayoutWidget = QtWidgets.QWidget(riding_list_window)
+        self.verticalLayoutWidget = QtWidgets.QWidget(program_list_window)
         self.verticalLayoutWidget.setGeometry(QtCore.QRect(9, 41, 461, 631))
         self.verticalLayoutWidget.setObjectName("verticalLayoutWidget")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.verticalLayoutWidget)
@@ -52,10 +52,10 @@ class Ui_program_list_window(object):
         self.tableView_name.verticalHeader().setDefaultSectionSize(30)
         self.verticalLayout_2.addWidget(self.tableView_name)
 
-        self.retranslateUi(riding_list_window)
-        QtCore.QMetaObject.connectSlotsByName(riding_list_window)
+        self.retranslateUi(program_list_window)
+        QtCore.QMetaObject.connectSlotsByName(program_list_window)
 
-    def retranslateUi(self, riding_list_window):
+    def retranslateUi(self, program_list_window):
         _translate = QtCore.QCoreApplication.translate
-        riding_list_window.setWindowTitle(_translate("riding_list_window", "riding_times"))
-        self.writeButton.setText(_translate("riding_list_window", "書込"))
+        program_list_window.setWindowTitle(_translate("program_list_window", "program_times"))
+        self.writeButton.setText(_translate("program_list_window", "書込"))

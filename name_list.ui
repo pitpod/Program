@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>riding_list_window</class>
- <widget class="QWidget" name="riding_list_window">
+ <class>program_list_window</class>
+ <widget class="QWidget" name="program_list_window">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>riding_times</string>
+   <string>program_times</string>
   </property>
   <widget class="QWidget" name="horizontalLayoutWidget">
    <property name="geometry">

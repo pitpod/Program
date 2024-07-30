@@ -5,7 +5,7 @@ from configobj import ConfigObj
 from PyQt5 import QtGui, QtCore, QtWidgets
 from PyQt5 import QtWidgets as Qw
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QColor, QPainter, QCloseEvent
+from PyQt5.QtGui import QColor, QPainter, QCloseEvent, QBrush
 from PyQt5.QtWidgets import QMainWindow, QFileDialog, QDesktopWidget, QMessageBox, QDialog
 from Ui_config import Ui_Dialog
 
@@ -30,11 +30,11 @@ class ConfWindow(QMainWindow):
             self.color_E = color.get('color_E')
             self.color_F = color.get('color_F')
 
-        B = (int(self.color_B[2:4],16),int(self.color_B[4:6],16),int(self.color_B[6:8],16))
-        C = (int(self.color_C[2:4],16),int(self.color_C[4:6],16),int(self.color_C[6:8],16))
-        D = (int(self.color_D[2:4],16),int(self.color_D[4:6],16),int(self.color_D[6:8],16))
-        E = (int(self.color_E[2:4],16),int(self.color_E[4:6],16),int(self.color_E[6:8],16))
-        F = (int(self.color_F[2:4],16),int(self.color_F[4:6],16),int(self.color_F[6:8],16))
+        B = (int(self.color_B[0:2],16),int(self.color_B[2:4],16),int(self.color_B[4:6],16),int(self.color_B[6:8],16))
+        C = (int(self.color_C[0:2],16),int(self.color_C[2:4],16),int(self.color_C[4:6],16),int(self.color_C[6:8],16))
+        D = (int(self.color_D[0:2],16),int(self.color_D[2:4],16),int(self.color_D[4:6],16),int(self.color_D[6:8],16))
+        E = (int(self.color_E[0:2],16),int(self.color_E[2:4],16),int(self.color_E[4:6],16),int(self.color_E[6:8],16))
+        F = (int(self.color_F[0:2],16),int(self.color_F[2:4],16),int(self.color_F[4:6],16),int(self.color_F[6:8],16))
 
         # ラジオボタンのグループ登録用オブジェクト
         self.radioGroup = QtWidgets.QButtonGroup()
@@ -63,8 +63,10 @@ class ConfWindow(QMainWindow):
         self.slider_B1 = self.ui.horizontalSlider_B1
         self.slider_B1.valueChanged.connect(lambda:self.colorValue(gv))
 
+        self.slider_A1 = self.ui.horizontalSlider_A1
+        self.slider_A1.valueChanged.connect(lambda:self.colorValue(gv))
 
-        brush = QtGui.QBrush(QtGui.QColor(D[0], D[1], D[2]))
+        brush = QtGui.QBrush(QtGui.QColor(D[1], D[2], D[3]))
         brush.setStyle(QtCore.Qt.SolidPattern)
         gv.setBackgroundBrush(brush)
 
@@ -81,31 +83,39 @@ class ConfWindow(QMainWindow):
         self.color_radio_id = self.radioGroup.checkedId()
         if self.color_radio_id == 1:
             color_num = self.color_D[2:8]
+            alpha_num = self.color_D[0:2]
         elif self.color_radio_id == 2:
             color_num = self.color_E[2:8]
+            alpha_num = self.color_E[0:2]
         elif self.color_radio_id == 3:
             color_num = self.color_B[2:8]
+            alpha_num = self.color_B[0:2]
         elif self.color_radio_id == 4:
             color_num = self.color_C[2:8]
+            alpha_num = self.color_C[0:2]
         self.ui.html_color.setText(color_num)
-        self.slider_R1.setValue(bcde[0])
-        self.slider_G1.setValue(bcde[1])
-        self.slider_B1.setValue(bcde[2])
+        self.ui.html_alpha.setText(alpha_num)
+        self.slider_R1.setValue(bcde[1])
+        self.slider_G1.setValue(bcde[2])
+        self.slider_B1.setValue(bcde[3])
+        self.slider_A1.setValue(bcde[0])
 
     def colorValue(self, gv):
         self.gv = gv
         R1 = self.slider_R1.value()
         G1 = self.slider_G1.value()
         B1 = self.slider_B1.value()
+        A1 = self.slider_A1.value()
         self.ui.lineEdit_R1.setText(str(R1))
         self.ui.lineEdit_G1.setText(str(G1))
         self.ui.lineEdit_B1.setText(str(B1))
+        self.ui.lineEdit_A1.setText(str(A1))
         color = (176,224,0)
         html_color = '#%02X%02X%02X' % (color[0],color[1],color[2])
         c = html_color
         color = (int(c[1:3],16),int(c[3:5],16),int(c[5:7],16))
-        brush = QtGui.QBrush(QtGui.QColor(R1, G1, B1))
-        brush.setStyle(QtCore.Qt.SolidPattern)
+        brush = QBrush(QColor(R1, G1, B1, A1))
+        brush.setStyle(Qt.SolidPattern)
         self.gv.setBackgroundBrush(brush)
         # brush = QtGui.QBrush(QColor(0, 0, 0))
         # brush.setStyle(QtCore.Qt.SolidPattern)

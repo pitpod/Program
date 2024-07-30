@@ -107,7 +107,7 @@ class Ui_Splash(object):
     def retranslateUi(self, Splash):
         _translate = QtCore.QCoreApplication.translate
         Splash.setWindowTitle(_translate("Splash", "MainWindow"))
-        self.label_title.setText(_translate("Splash", "プログラム回数チェック"))
+        self.label_title.setText(_translate("Splash", "契約日数チェック"))
         self.label_description.setText(_translate("Splash", "<html><head/><body><p>プログラム実施回数チェックリスト</p></body></html>"))
         self.label_loading.setText(_translate("Splash", "loading..."))
         self.label_credits.setText(_translate("Splash", "<html><head/><body><p><span style=\" font-weight:600;\">Created</span>: Kouji Matsumoto</p></body></html>"))
